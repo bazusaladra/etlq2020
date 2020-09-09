@@ -16,10 +16,10 @@ apply plugin: 'kotlin'
 apply plugin: "kotlin-spring"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'groovy'
 
 jar {
-    baseName = 'etlq2020'
-    version = '0.1.0'
+    archiveName("etlq2020")
 }
 
 repositories {
@@ -30,4 +30,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.springframework.boot:spring-boot-starter-web"
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation 'org.codehaus.groovy:groovy-all:2.4.15'
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.4'
 }
