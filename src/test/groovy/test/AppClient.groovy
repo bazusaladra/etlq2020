@@ -1,25 +1,45 @@
 package test
 
-import groovyx.net.http.HttpResponseDecorator
-import groovyx.net.http.RESTClient
+
 import net.jodah.failsafe.Failsafe
 import net.jodah.failsafe.RetryPolicy
-import net.jodah.failsafe.function.CheckedRunnable
 import net.jodah.failsafe.function.CheckedSupplier
-import org.apache.http.HttpResponse
-import org.junit.Assert
+import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider
+import org.spockframework.util.IoUtil
+import org.springframework.core.io.ClassPathResource
+import org.springframework.http.MediaType
 
+import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientBuilder
+import javax.ws.rs.client.Entity
+import javax.ws.rs.client.WebTarget
+import javax.ws.rs.core.Response
 import java.time.Duration
-
-import static org.spockframework.util.CollectionUtil.mapOf
 
 class AppClient {
 
-    def client = new RESTClient("http://localhost:8080/")
+    Client client = ClientBuilder.newClient()
+    WebTarget webTarget = client.target("http://localhost:8080/")
 
-    HttpResponseDecorator getLiveStatus(Closure checkClosure) {
-        CheckedSupplier<HttpResponseDecorator> check = {
-            client.get([:], checkClosure)
+    def shutdown() {
+        client.close()
+    }
+
+    Response getLiveStatus(Closure checkClosure) {
+        CheckedSupplier<Response> check = {
+            def response = webTarget.request().get()
+            checkClosure(response)
+        }
+        withFailsafe(check)
+    }
+
+    Map sendDataFile(String filePath, Closure checkClosure) {
+        def body = IoUtil.getText(new ClassPathResource(filePath).getInputStream())
+        CheckedSupplier<Map> check = {
+            def entity = Entity.entity(body, MediaType.TEXT_PLAIN_VALUE)
+            def response = webTarget.path("/send").request().post(entity)
+            checkClosure(response)
+            response.readEntity(HashMap.class)
         }
         withFailsafe(check)
     }

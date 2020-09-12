@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 class MainController {
 
     @GetMapping("/")
-    fun getApplicationLiveStatus(): Map<String, Boolean> {
+    fun getApplicationLiveStatus(): Map<String, Any> {
         return listOf("live" to true).toMap()
     }
 }
