@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+
+  etlq2020:
+    image: etlq2020
+    container_name: etlq2020
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - MONGO_HOST=mongodb
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=local-root
+      - MONGO_INITDB_ROOT_PASSWORD=local-pass
+      - MONGO_INITDB_DATABASE=campains
+    ports:
+      - 27017:27017
