@@ -51,6 +51,16 @@ class AcceptanceTest extends Specification {
         response["loaded"] == 23198
     }
 
+    def "should return total Clicks for a given Datasource for a given Date range"() {
+        given:
+
+        when:
+        def response = client
+
+        then:
+        response["loaded"] == 23198
+    }
+
     def verifyApplicationStarted() {
         client.getLiveStatus({ Response response ->
             assertEquals(200, response.status)
@@ -83,14 +93,15 @@ class AcceptanceTest extends Specification {
         }
         applicationProcess = execCommand(false,
                 ["MONGODB_HOST": "localhost"],
-                "java", "-XX:+UseG1GC", "-jar", "./build/libs/etlq2020.jar").get()
+                "java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006",
+                "-jar", "./build/libs/etlq2020.jar").get()
     }
 
     void stopStack() {
         applicationProcess?.destroy()
     }
 
-    private boolean isRunningOnWindows() {
+    private static boolean isRunningOnWindows() {
         System.getProperty("os.name").toLowerCase().indexOf("win") >= 0
     }
 }

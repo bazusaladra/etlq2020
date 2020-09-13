@@ -15,8 +15,11 @@ import javax.ws.rs.client.Entity
 import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
 import java.time.Duration
+import java.util.logging.Logger
 
 class AppClient {
+
+    static logger = Logger.getLogger(AppClient.class.name)
 
     Client client = ClientBuilder.newClient()
     WebTarget webTarget = client.target("http://localhost:8080/")
@@ -36,7 +39,7 @@ class AppClient {
     Map sendDataFile(String filePath, Closure checkClosure) {
         def body = IoUtil.getText(new ClassPathResource(filePath).getInputStream())
         CheckedSupplier<Map> check = {
-            def entity = Entity.entity(body, MediaType.TEXT_PLAIN_VALUE)
+            def entity = Entity.entity(body, MediaType.APPLICATION_OCTET_STREAM_VALUE)
             def response = webTarget.path("/send").request().post(entity)
             checkClosure(response)
             response.readEntity(HashMap.class)
@@ -44,11 +47,12 @@ class AppClient {
         withFailsafe(check)
     }
 
-    static <T> T withFailsafe(CheckedSupplier<T> check, int maxDurationInSeconds = 120) {
+    static <T> T withFailsafe(CheckedSupplier<T> check, int maxAttempts = 60) {
         Failsafe.with(new RetryPolicy()
                 .onFailedAttempt({ Exception e -> e.printStackTrace() })
                 .withDelay(Duration.ofSeconds(2))
-                .withMaxDuration(Duration.ofSeconds(120)))
+                .withMaxAttempts(maxAttempts))
+                .onFailure({e -> logger.warning("failsafe execution failed ${e}")})
                 .get(check)
     }
 }

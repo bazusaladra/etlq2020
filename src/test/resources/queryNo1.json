@@ -1,0 +1,16 @@
+{
+  "groupBy": ["Google Ads"],
+  "filterBy": [
+    {
+      "field": "Daily",
+      "condition" : {
+        "operation" : "equals",
+        "parameter" : "11/12/19"
+      }
+    }
+  ],
+  "aggregate": {
+    "field" : "Clicks",
+    "operation" : "sum"
+  }
+}

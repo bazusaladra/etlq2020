@@ -21,6 +21,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=local-root
       - MONGO_INITDB_ROOT_PASSWORD=local-pass
-      - MONGO_INITDB_DATABASE=campains
+      - MONGO_INITDB_DATABASE=etlq2020
     ports:
       - 27017:27017

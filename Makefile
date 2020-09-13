@@ -5,7 +5,7 @@ build-local-windows:
 	gradlew build -x test bootJar --console plain
 
 run-local:
-	MONGODB_HOST=localhost java -XX:+UseG1GC -jar ./build/libs/etlq2020.jar
+	MONGODB_HOST=localhost java -jar ./build/libs/etlq2020.jar
 
 restart-app:
 	make stop-app
