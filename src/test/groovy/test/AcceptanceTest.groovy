@@ -1,6 +1,5 @@
 package test
 
-
 import org.junit.Assert
 import spock.lang.Shared
 import spock.lang.Specification
@@ -9,7 +8,7 @@ import test.AppClient
 
 import javax.ws.rs.core.Response
 
-import static org.junit.Assert.*
+import static org.junit.Assert.assertEquals
 
 /**
  * To set up the testing environment please run
@@ -65,6 +64,20 @@ class AcceptanceTest extends Specification {
         (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
     }
 
+    def "should return total Clicks for a given Datasource for a given Date range"() {
+        given:
+
+        when:
+        def response = client.queryData("queryNo2.json",
+                { Response response -> assertEquals(200, response.status) })
+
+        then:
+        (response["results"] as List).size() == 3
+        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
+        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
+        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
+    }
+
     def verifyApplicationStarted() {
         client.getLiveStatus({ Response response ->
             assertEquals(200, response.status)
@@ -89,7 +102,7 @@ class AcceptanceTest extends Specification {
     }
 
     void startStack() {
-//        execCommand("make", "restart-deps")
+        execCommand("make", "restart-deps")
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {
