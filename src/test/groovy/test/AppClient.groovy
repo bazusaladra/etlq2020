@@ -47,7 +47,18 @@ class AppClient {
         withFailsafe(check)
     }
 
-    static <T> T withFailsafe(CheckedSupplier<T> check, int maxAttempts = 60) {
+    Map queryData(String filePath, Closure checkClosure) {
+        def body = IoUtil.getText(new ClassPathResource(filePath).getInputStream())
+        CheckedSupplier<Map> check = {
+            def entity = Entity.entity(body, MediaType.APPLICATION_JSON_VALUE)
+            def response = webTarget.path("/query").request().post(entity)
+            checkClosure(response)
+            response.readEntity(HashMap.class)
+        }
+        withFailsafe(check)
+    }
+
+    static <T> T withFailsafe(CheckedSupplier<T> check, int maxAttempts = 5) {
         Failsafe.with(new RetryPolicy()
                 .onFailedAttempt({ Exception e -> e.printStackTrace() })
                 .withDelay(Duration.ofSeconds(2))

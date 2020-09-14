@@ -51,14 +51,18 @@ class AcceptanceTest extends Specification {
         response["loaded"] == 23198
     }
 
-    def "should return total Clicks for a given Datasource for a given Date range"() {
+    def "should return total Clicks for a given Datasource for a given Date"() {
         given:
 
         when:
-        def response = client
+        def response = client.queryData("queryNo1.json",
+                { Response response -> assertEquals(200, response.status) })
 
         then:
-        response["loaded"] == 23198
+        (response["results"] as List).size() == 3
+        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
+        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
+        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
     }
 
     def verifyApplicationStarted() {
@@ -85,7 +89,7 @@ class AcceptanceTest extends Specification {
     }
 
     void startStack() {
-        execCommand("make", "restart-deps")
+//        execCommand("make", "restart-deps")
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {

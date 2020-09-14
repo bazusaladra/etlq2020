@@ -27,9 +27,7 @@ class DataInputController(val databaseClient: DatabaseClient) {
         while (true) {
             val line = dataRows.readLine() ?: break
             val dataRow = DataRow.fromString(line)
-            val doc = dataRow.toDocument()
-            databaseClient.getCollection()
-                    .findOneAndReplace(dataRow.getID(), doc)
+            databaseClient.upsertDataRow(dataRow)
             ++processed
         }
         return listOf("loaded" to processed).toMap()
@@ -66,9 +64,12 @@ class DataInputController(val databaseClient: DatabaseClient) {
         companion object {
             fun fromString(it: String): DataRow {
                 val split = it.split(',')
-                val daily = LocalDate.parse(split[2], DateTimeFormatter.ofPattern("MM/dd/uu"))
+                val daily = parseLocalDate(split[2])
                 return DataRow(split[0], split[1], daily, split[3].toInt(), split[4].toInt())
             }
+
+            fun parseLocalDate(text: String) =
+                    LocalDate.parse(text, DateTimeFormatter.ofPattern("MM/dd/uu"))
 
         }
     }
