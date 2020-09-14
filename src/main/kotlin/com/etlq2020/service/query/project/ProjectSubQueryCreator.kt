@@ -13,8 +13,9 @@ class ProjectSubQueryCreator(
 
     init {
         ProjectDto.ProjectOperationDto.OperationType.values().forEach { type ->
-            if (projectPredicateSuppliers.filter { it.shouldHandle(type) }.size > 1) {
-                throw IllegalStateException("multiple implementations for type $type")
+            val size = projectPredicateSuppliers.filter { it.shouldHandle(type) }.size
+            if (size != 1) {
+                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
             }
         }
     }

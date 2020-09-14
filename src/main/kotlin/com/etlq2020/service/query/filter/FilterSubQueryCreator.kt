@@ -11,13 +11,15 @@ class FilterSubQueryCreator(val filterPredicateSuppliers: List<FilterPredicateSu
 
     init {
         ConditionDto.FilterOperationType.values().forEach { type ->
-            if (filterPredicateSuppliers.filter { it.shouldHandle(type) }.size > 1) {
-                throw IllegalStateException("multiple implementations for type $type")
+            val size = filterPredicateSuppliers.filter { it.shouldHandle(type) }.size
+            if (size != 1) {
+                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
             }
         }
         ConditionDto.ParameterType.values().forEach { type ->
-            if (filterParameterParsers.filter { it.shouldHandle(type) }.size > 1) {
-                throw IllegalStateException("multiple implementations for type $type")
+            val size = filterParameterParsers.filter { it.shouldHandle(type) }.size
+            if (size != 1) {
+                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
             }
         }
     }

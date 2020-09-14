@@ -9,8 +9,9 @@ class AggregateSubQueryCreator(val aggregatePredicateSuppliers: List<AggregatePr
 
     init {
         AggregateDto.OperationType.values().forEach { type ->
-            if (aggregatePredicateSuppliers.filter { it.shouldHandle(type) }.size > 1) {
-                throw IllegalStateException("multiple implementations for type $type")
+            val size = aggregatePredicateSuppliers.filter { it.shouldHandle(type) }.size
+            if (size != 1) {
+                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
             }
         }
     }
