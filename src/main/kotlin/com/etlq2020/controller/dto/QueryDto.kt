@@ -24,12 +24,13 @@ data class AggregateDto(val field: String, val operation: OperationType) {
     }
 }
 
-data class ProjectDto(val field: String, val operation: ProjectOperationDto)
+data class ProjectDto(val field: String, val operation: ProjectOperationDto) {
 
-data class ProjectOperationDto(val type: OperationType,
-                               val parameters: List<String>) {
+    data class ProjectOperationDto(val type: OperationType,
+                                   val parameters: List<String>) {
 
-    enum class OperationType() {
-        DIVIDE
+        enum class OperationType() {
+            DIVIDE
+        }
     }
 }

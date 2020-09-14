@@ -10,6 +10,13 @@ import java.io.InputStreamReader
 @Component
 class DataInputService(private val dataRepository: DataRepository) {
 
+    /**
+     * The persisting method is not transactional. As an improvement
+     * the batch writes should be used. The readiness flag on the batch data
+     * should be toggled-on after the whole batch has been persisted.
+     * The data-extracting queries should process only the data
+     * with readiness flag toggled-on.
+     */
     fun persist(inputStream: InputStream): Long {
         val dataRows = checkCsvHeader(inputStream)
         var processed = 0L

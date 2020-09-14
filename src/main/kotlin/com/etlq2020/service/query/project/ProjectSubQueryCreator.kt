@@ -11,6 +11,14 @@ import org.springframework.stereotype.Component
 class ProjectSubQueryCreator(
         val projectPredicateSuppliers: List<ProjectPredicateSupplier>) {
 
+    init {
+        ProjectDto.ProjectOperationDto.OperationType.values().forEach { type ->
+            if (projectPredicateSuppliers.filter { it.shouldHandle(type) }.size > 1) {
+                throw IllegalStateException("multiple implementations for type $type")
+            }
+        }
+    }
+
     fun createPredicate(projectDto: ProjectDto): Bson {
         val operationDto = projectDto.operation
         val field = projectDto.field
