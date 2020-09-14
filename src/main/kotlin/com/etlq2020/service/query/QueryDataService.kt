@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class QueryDataService(
+        private val dataRepository: DataRepository,
         private val filterConditionCreator: FilterSubQueryCreator,
         private val aggregateCreator: AggregateSubQueryCreator,
-        private val projectOperationCreator: ProjectSubQueryCreator,
-        private val dataRepository: DataRepository
+        private val projectOperationCreator: ProjectSubQueryCreator
 ) {
 
     fun query(query: QueryDto): List<Document> {

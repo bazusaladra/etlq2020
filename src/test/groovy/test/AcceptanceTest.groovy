@@ -51,19 +51,19 @@ class AcceptanceTest extends Specification {
         (response["results"] as List).contains([_id: null, Clicks: 172576])
     }
 
-//    def "should return total Clicks for a given Datasource for a given Date range"() {
-//        given:
-//
-//        when:
-//        def response = client.queryData("queryNo2.json",
-//                { Response response -> assertEquals(200, response.status) })
-//
-//        then:
-//        (response["results"] as List).size() == 3
-//        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
-//        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
-//        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
-//    }
+    def "should return total Clicks for a given Datasource for a given Date range"() {
+        given:
+
+        when:
+        def response = client.queryData("queryNo2.json",
+                { Response response -> assertEquals(200, response.status) })
+
+        then:
+        (response["results"] as List).size() == 3
+        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], Clicks: 1201])
+        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], Clicks: 17138])
+        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], Clicks: 319])
+    }
 
     def "should return Click-Through Rate (CTR) per Datasource and Campaign"() {
         given:
@@ -75,6 +75,18 @@ class AcceptanceTest extends Specification {
         then:
         (response["results"] as List).size() == 185
         (response["results"] as List).contains([_id: [Datasource: "Twitter Ads", Campaign: "Mitgliedschaft KiMi"], ClickThroughRate: 0.04147421424014242d])
+    }
+
+    def "should return Impressions over time (daily) for November 2019"() {
+        given:
+
+        when:
+        def response = client.queryData("queryNo4.json",
+                { Response response -> assertEquals(200, response.status) })
+
+        then:
+        (response["results"] as List).size() == 30
+        (response["results"] as List).contains([_id: [Daily: "2019-11-12T00:00:00.000+00:00"], Impressions: 275228])
     }
 
     def verifyApplicationStarted() {
@@ -101,7 +113,7 @@ class AcceptanceTest extends Specification {
     }
 
     void startStack() {
-//        execCommand("make", "restart-deps")
+        execCommand("make", "restart-deps")
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {

@@ -9,7 +9,7 @@ data class ConditionDto(val operation: FilterOperationType,
                         val parameter: String, val type: ParameterType) {
 
     enum class FilterOperationType {
-        EQUALS
+        EQUALS, GTE, LTE
     }
 
     enum class ParameterType {
