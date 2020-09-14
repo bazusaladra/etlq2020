@@ -1,0 +1,28 @@
+{
+  "groupBy": [
+    "Datasource",
+    "Campaign"
+  ],
+  "aggregate": [
+    {
+      "field": "Clicks",
+      "operation": "SUM"
+    },
+    {
+      "field": "Impressions",
+      "operation": "SUM"
+    }
+  ],
+  "project": [
+    {
+      "field": "ClickThroughRate",
+      "operation": {
+        "type": "DIVIDE",
+        "parameters": [
+          "Clicks",
+          "Impressions"
+        ]
+      }
+    }
+  ]
+}

@@ -1,16 +1,18 @@
 package com.etlq2020.service.query
 
 import com.etlq2020.controller.dto.QueryDto
+import com.etlq2020.service.query.filter.FilterSubQuery
 import com.mongodb.client.model.Aggregates
 import org.bson.Document
 import org.bson.conversions.Bson
 
 class Query(private val groupBy: List<String>?, private val filterBy: List<FilterSubQuery>?,
-            private val aggregate: AggregateSubQuery) {
+            private val aggregate: List<AggregateSubQuery>,
+            private val project: List<ProjectSubQuery>?) {
 
     companion object {
         fun fromDto(queryDto: QueryDto): Query {
-            return Query(queryDto.groupBy, queryDto.filterBy, queryDto.aggregate)
+            return Query(queryDto.groupBy, queryDto.filterBy, queryDto.aggregate, queryDto.project)
         }
     }
 
@@ -18,7 +20,7 @@ class Query(private val groupBy: List<String>?, private val filterBy: List<Filte
         return listOfNotNull(
                 createFilterByPredicates(),
                 createGroupByPredicates(),
-                createAggregatePredicates()
+                createProjectPredicates()
         ).flatten()
     }
 
@@ -30,21 +32,22 @@ class Query(private val groupBy: List<String>?, private val filterBy: List<Filte
     }
 
     private fun createGroupByPredicates(): List<Bson>? {
+        val aggregatePredicates = aggregate.map { it.getPredicate() }
         if (groupBy == null || groupBy.isEmpty()) {
-            return null
+            return listOf(Aggregates.group(null, aggregatePredicates))
         }
         val id = Document()
         groupBy.forEach {
-            id.append(it, "$${it.toLowerCase()}")
+            id.append(it, "$${it}")
         }
-        return listOf(Aggregates.group(id, aggregate.getPredicate()))
+        return listOf(Aggregates.group(id, aggregatePredicates))
     }
 
-    private fun createAggregatePredicates(): List<Bson>? {
-        if (groupBy != null && groupBy.isNotEmpty()) {
+    private fun createProjectPredicates(): List<Bson>? {
+        if (project == null || project.isEmpty()) {
             return null
         }
-        return null
+        return project.map { it.getPredicate() }
     }
 
 }

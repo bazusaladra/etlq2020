@@ -10,17 +10,6 @@ import javax.ws.rs.core.Response
 
 import static org.junit.Assert.assertEquals
 
-/**
- * To set up the testing environment please run
- * make restart-deps && make build-local && make run-local
- * or
- * make restart-app
- *
- * In order to reduce the building time the test code builds and starts
- * the application on the local host instead of using docker-compose directly. The approach to
- * environment setup should be changed when machine with a better
- * performance gets available.
- */
 @Stepwise
 class AcceptanceTest extends Specification {
 
@@ -50,7 +39,7 @@ class AcceptanceTest extends Specification {
         response["loaded"] == 23198
     }
 
-    def "should return total Clicks for a given Datasource for a given Date"() {
+    def "should return total Clicks for a Facebook Datasource"() {
         given:
 
         when:
@@ -58,24 +47,34 @@ class AcceptanceTest extends Specification {
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        (response["results"] as List).size() == 3
-        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
-        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
-        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
+        (response["results"] as List).size() == 1
+        (response["results"] as List).contains([_id: null, Clicks: 172576])
     }
 
-    def "should return total Clicks for a given Datasource for a given Date range"() {
+//    def "should return total Clicks for a given Datasource for a given Date range"() {
+//        given:
+//
+//        when:
+//        def response = client.queryData("queryNo2.json",
+//                { Response response -> assertEquals(200, response.status) })
+//
+//        then:
+//        (response["results"] as List).size() == 3
+//        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
+//        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
+//        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
+//    }
+
+    def "should return Click-Through Rate (CTR) per Datasource and Campaign"() {
         given:
 
         when:
-        def response = client.queryData("queryNo2.json",
+        def response = client.queryData("queryNo3.json",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        (response["results"] as List).size() == 3
-        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], result: 629])
-        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], result: 8594])
-        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], result: 166])
+        (response["results"] as List).size() == 185
+        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads", Campaign: "Mitgliedschaft KiMi"], ClickThroughRate: 0.04147421424014242d])
     }
 
     def verifyApplicationStarted() {
@@ -102,7 +101,7 @@ class AcceptanceTest extends Specification {
     }
 
     void startStack() {
-        execCommand("make", "restart-deps")
+//        execCommand("make", "restart-deps")
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {

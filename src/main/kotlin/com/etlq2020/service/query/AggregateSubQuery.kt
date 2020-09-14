@@ -13,7 +13,7 @@ data class AggregateSubQuery(val field: String, val operation: Operation) {
     enum class Operation(private val supplier: AggregateSupplier) {
         SUM(object : AggregateSupplier {
             override fun getAggregatePredicate(field: String): BsonField {
-                return Accumulators.sum("result", "$${field.toLowerCase()}")
+                return Accumulators.sum(field, "$${field}")
             }
         });
 

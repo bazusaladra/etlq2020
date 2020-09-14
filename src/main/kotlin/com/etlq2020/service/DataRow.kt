@@ -8,17 +8,17 @@ data class DataRow(private val datasource: String, private val campaign: String,
                    private val daily: LocalDate, private val clicks: Int, private val impressions: Int) {
 
     fun toDocument(): Document {
-        return Document().append("datasource", datasource)
-                .append("campaign", campaign)
-                .append("daily", daily)
-                .append("clicks", clicks)
-                .append("impressions", impressions)
+        return Document().append("Datasource", datasource)
+                .append("Campaign", campaign)
+                .append("Daily", daily)
+                .append("Clicks", clicks)
+                .append("Impressions", impressions)
     }
 
     fun getID(): Document {
-        return Document().append("datasource", datasource)
-                .append("campaign", campaign)
-                .append("daily", daily)
+        return Document().append("Datasource", datasource)
+                .append("Campaign", campaign)
+                .append("Daily", daily)
     }
 
     companion object {

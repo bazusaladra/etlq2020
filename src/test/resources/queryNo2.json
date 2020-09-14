@@ -20,8 +20,10 @@
       }
     }
   ],
-  "aggregate": {
-    "field": "Clicks",
-    "operation": "SUM"
-  }
+  "aggregate": [
+    {
+      "field": "Clicks",
+      "operation": "SUM"
+    }
+  ]
 }

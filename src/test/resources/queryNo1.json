@@ -1,19 +1,18 @@
 {
-  "groupBy": [
-    "Datasource"
-  ],
   "filterBy": [
     {
-      "field": "Daily",
+      "field": "Datasource",
       "condition": {
         "operation": "EQUALS",
-        "parameter": "11/12/19",
-        "type": "DATE"
+        "parameter": "Facebook Ads",
+        "type": "STRING"
       }
     }
   ],
-  "aggregate": {
-    "field": "Clicks",
-    "operation": "SUM"
-  }
+  "aggregate": [
+    {
+      "field": "Clicks",
+      "operation": "SUM"
+    }
+  ]
 }

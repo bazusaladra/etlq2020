@@ -36,7 +36,7 @@ class DatabaseClient(@Value("#{environment.MONGODB_HOST}") private val mongoHost
                 .find { it["name"] == name } == null
         if (notExists) {
             getCollection().createIndex(
-                    Document(mapOf("datasource" to 1, "campaign" to 1, "daily" to 1)),
+                    Document(mapOf("Datasource" to 1, "Campaign" to 1, "Daily" to 1)),
                     IndexOptions().unique(true).name(name)
             )
         }
