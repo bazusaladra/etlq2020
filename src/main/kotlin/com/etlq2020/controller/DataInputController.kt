@@ -1,6 +1,6 @@
 package com.etlq2020.controller
 
-import com.etlq2020.service.DataInputService
+import com.etlq2020.service.input.DataInputService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController

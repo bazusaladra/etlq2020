@@ -27,9 +27,8 @@ start-deps:
 stop-deps:
 	docker-compose down --remove-orphans
 
-unit-test:
-	cd ./cmd && go test -count=1 ./...
-
 acceptance-test:
-	make restart-app
-	cd ./acceptance && go test -count=1
+	./gradlew test --console plain
+
+acceptance-test-windows:
+	gradlew test --console plain

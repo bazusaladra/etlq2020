@@ -1,4 +1,4 @@
-package com.etlq2020.service
+package com.etlq2020.service.input
 
 import com.etlq2020.controller.dto.DataRowDto
 import com.etlq2020.repository.DataRepository
