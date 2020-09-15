@@ -13,6 +13,8 @@ import static org.junit.Assert.assertEquals
 @Stepwise
 class SmallDataSetAcceptanceTest extends Specification {
 
+    def shouldRestartDb = true
+
     @Shared
     def client = new AppClient()
     @Shared
@@ -117,7 +119,9 @@ class SmallDataSetAcceptanceTest extends Specification {
     }
 
     void startStack() {
-//        execCommand("make", "restart-deps")
+        if (shouldRestartDb) {
+            execCommand("make", "restart-deps")
+        }
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {
