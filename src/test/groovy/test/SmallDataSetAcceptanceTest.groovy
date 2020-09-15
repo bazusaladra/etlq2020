@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response
 import static org.junit.Assert.assertEquals
 
 @Stepwise
-class AcceptanceTest extends Specification {
+class SmallDataSetAcceptanceTest extends Specification {
 
     @Shared
     def client = new AppClient()
@@ -32,61 +32,65 @@ class AcceptanceTest extends Specification {
         given:
 
         when:
-        def response = client.sendDataFile("inputDataNo1.csv",
+        def response = client.sendDataFile("small_dataset/inputDataNo1.csv",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        response["loaded"] == 23198
+        response["loaded"] == 12
     }
 
-    def "should return total Clicks for a Facebook Datasource"() {
+    def "should return total Clicks for a Company A Datasource"() {
         given:
 
         when:
-        def response = client.queryData("queryNo1.json",
+        def response = client.queryData("small_dataset/queryNo1.json",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
         (response["results"] as List).size() == 1
-        (response["results"] as List).contains([_id: null, Clicks: 172576])
+        (response["results"] as List).contains([_id: null, Clicks: 9])
     }
 
     def "should return total Clicks for a given Datasource for a given Date range"() {
         given:
 
         when:
-        def response = client.queryData("queryNo2.json",
+        def response = client.queryData("small_dataset/queryNo2.json",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        (response["results"] as List).size() == 3
-        (response["results"] as List).contains([_id: [Datasource: "Facebook Ads"], Clicks: 1201])
-        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads"], Clicks: 17138])
-        (response["results"] as List).contains([_id: [Datasource: "Google Ads"], Clicks: 319])
+        (response["results"] as List).size() == 2
+        (response["results"] as List).contains([_id: [Datasource: "Company A"], Clicks: 5])
+        (response["results"] as List).contains([_id: [Datasource: "Company B"], Clicks: 8])
     }
 
     def "should return Click-Through Rate (CTR) per Datasource and Campaign"() {
         given:
 
         when:
-        def response = client.queryData("queryNo3.json",
+        def response = client.queryData("small_dataset/queryNo3.json",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        (response["results"] as List).size() == 185
-        (response["results"] as List).contains([_id: [Datasource: "Twitter Ads", Campaign: "Mitgliedschaft KiMi"], ClickThroughRate: 0.04147421424014242d])
+        (response["results"] as List).size() == 4
+        (response["results"] as List).contains([_id: [Datasource: "Company A", Campaign: "Campaign 1"], ClickThroughRate: 3d / 30])
+        (response["results"] as List).contains([_id: [Datasource: "Company A", Campaign: "Campaign 2"], ClickThroughRate: 5d / 30])
+        (response["results"] as List).contains([_id: [Datasource: "Company B", Campaign: "Campaign 1"], ClickThroughRate: 9d / 40])
+        (response["results"] as List).contains([_id: [Datasource: "Company B", Campaign: "Campaign 2"], ClickThroughRate: 5d / 30])
     }
 
-    def "should return Impressions over time (daily) for November 2019"() {
+    def "should return Impressions over time (daily) for 12-14 November 2019"() {
         given:
 
         when:
-        def response = client.queryData("queryNo4.json",
+        def response = client.queryData("small_dataset/queryNo4.json",
                 { Response response -> assertEquals(200, response.status) })
 
         then:
-        (response["results"] as List).size() == 30
-        (response["results"] as List).contains([_id: [Daily: "2019-11-12T00:00:00.000+00:00"], Impressions: 275228])
+        (response["results"] as List).size() == 3
+        (response["results"] as List).contains([_id: [Daily: "2019-11-12T00:00:00.000+00:00"], Impressions: 60])
+        (response["results"] as List).contains([_id: [Daily: "2019-11-13T00:00:00.000+00:00"], Impressions: 40])
+        (response["results"] as List).contains([_id: [Daily: "2019-11-14T00:00:00.000+00:00"], Impressions: 20])
     }
 
     def verifyApplicationStarted() {
@@ -113,7 +117,7 @@ class AcceptanceTest extends Specification {
     }
 
     void startStack() {
-        execCommand("make", "restart-deps")
+//        execCommand("make", "restart-deps")
         if (isRunningOnWindows()) {
             execCommand("make", "build-local-windows")
         } else {

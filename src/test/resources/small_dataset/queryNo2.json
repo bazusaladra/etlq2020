@@ -1,0 +1,29 @@
+{
+  "groupBy": [
+    "Datasource"
+  ],
+  "filterBy": [
+    {
+      "field": "Daily",
+      "condition": {
+        "operation": "GTE",
+        "parameter": "11/13/19",
+        "type": "DATE"
+      }
+    },
+    {
+      "field": "Daily",
+      "condition": {
+        "operation": "LTE",
+        "parameter": "11/14/19",
+        "type": "DATE"
+      }
+    }
+  ],
+  "aggregate": [
+    {
+      "field": "Clicks",
+      "operation": "SUM"
+    }
+  ]
+}

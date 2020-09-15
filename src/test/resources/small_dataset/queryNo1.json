@@ -1,0 +1,18 @@
+{
+  "filterBy": [
+    {
+      "field": "Datasource",
+      "condition": {
+        "operation": "EQUALS",
+        "parameter": "Company A",
+        "type": "STRING"
+      }
+    }
+  ],
+  "aggregate": [
+    {
+      "field": "Clicks",
+      "operation": "SUM"
+    }
+  ]
+}

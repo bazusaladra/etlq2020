@@ -1,0 +1,29 @@
+{
+  "groupBy": [
+    "Daily"
+  ],
+  "filterBy": [
+    {
+      "field": "Daily",
+      "condition": {
+        "operation": "GTE",
+        "parameter": "11/12/19",
+        "type": "DATE"
+      }
+    },
+    {
+      "field": "Daily",
+      "condition": {
+        "operation": "LTE",
+        "parameter": "11/14/19",
+        "type": "DATE"
+      }
+    }
+  ],
+  "aggregate": [
+    {
+      "field": "Impressions",
+      "operation": "SUM"
+    }
+  ]
+}
