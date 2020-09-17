@@ -1,7 +1,9 @@
 package com.etlq2020.service.query.filter
 
-import com.etlq2020.controller.dto.ConditionDto
+import com.etlq2020.controller.dto.ConditionDto.FilterOperationType
+import com.etlq2020.controller.dto.ConditionDto.ParameterType
 import com.etlq2020.controller.dto.FilterDto
+import com.etlq2020.service.query.QueryDtoHandler.Companion.checkImplementations
 import org.bson.conversions.Bson
 import org.springframework.stereotype.Component
 
@@ -10,18 +12,8 @@ class FilterSubQueryCreator(val filterPredicateSuppliers: List<FilterPredicateSu
                             val filterParameterParsers: List<FilterParameterParser>) {
 
     init {
-        ConditionDto.FilterOperationType.values().forEach { type ->
-            val size = filterPredicateSuppliers.filter { it.shouldHandle(type) }.size
-            if (size != 1) {
-                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
-            }
-        }
-        ConditionDto.ParameterType.values().forEach { type ->
-            val size = filterParameterParsers.filter { it.shouldHandle(type) }.size
-            if (size != 1) {
-                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
-            }
-        }
+        checkImplementations(FilterOperationType.values(), filterPredicateSuppliers)
+        checkImplementations(ParameterType.values(), filterParameterParsers)
     }
 
     fun createPredicate(filterDto: FilterDto): Bson {

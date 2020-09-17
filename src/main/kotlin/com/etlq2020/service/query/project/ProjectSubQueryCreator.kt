@@ -1,6 +1,7 @@
 package com.etlq2020.service.query.project
 
 import com.etlq2020.controller.dto.ProjectDto
+import com.etlq2020.service.query.QueryDtoHandler.Companion.checkImplementations
 import com.mongodb.client.model.Aggregates
 import org.bson.Document
 import org.bson.conversions.Bson
@@ -12,12 +13,7 @@ class ProjectSubQueryCreator(
         val projectPredicateSuppliers: List<ProjectPredicateSupplier>) {
 
     init {
-        ProjectDto.ProjectOperationDto.OperationType.values().forEach { type ->
-            val size = projectPredicateSuppliers.filter { it.shouldHandle(type) }.size
-            if (size != 1) {
-                throw IllegalStateException("expected exactly 1 implementation for type $type but found $size")
-            }
-        }
+        checkImplementations(ProjectDto.ProjectOperationDto.OperationType.values(), projectPredicateSuppliers)
     }
 
     fun createPredicate(projectDto: ProjectDto): Bson {

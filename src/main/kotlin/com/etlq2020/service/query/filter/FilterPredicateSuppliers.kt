@@ -1,13 +1,13 @@
 package com.etlq2020.service.query.filter
 
 import com.etlq2020.controller.dto.ConditionDto
+import com.etlq2020.service.query.QueryDtoHandler
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import org.bson.conversions.Bson
 import org.springframework.stereotype.Component
 
-interface FilterPredicateSupplier {
-    fun shouldHandle(operationType: ConditionDto.FilterOperationType): Boolean
+interface FilterPredicateSupplier : QueryDtoHandler<ConditionDto.FilterOperationType> {
     fun createPredicate(field: String, parameter: Any): Bson
 }
 

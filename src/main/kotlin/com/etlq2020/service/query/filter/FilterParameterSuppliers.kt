@@ -2,10 +2,10 @@ package com.etlq2020.service.query.filter
 
 import com.etlq2020.controller.dto.ConditionDto
 import com.etlq2020.controller.dto.DataRowDto.Companion.parseLocalDate
+import com.etlq2020.service.query.QueryDtoHandler
 import org.springframework.stereotype.Component
 
-interface FilterParameterParser {
-    fun shouldHandle(operation: ConditionDto.ParameterType): Boolean
+interface FilterParameterParser : QueryDtoHandler<ConditionDto.ParameterType> {
     fun parseParameter(parameter: String): Any
 }
 
